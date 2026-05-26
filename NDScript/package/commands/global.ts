@@ -1,4 +1,5 @@
 import { RuntimeContext } from "../runtime/context"
+import { NDScriptError } from "../utils/errors"
 
 export class Global {
 
@@ -6,6 +7,14 @@ export class Global {
         context: RuntimeContext,
         parts: string[]
     ) {
+
+        if (parts.length < 5) {
+
+            throw new NDScriptError(
+                "UPDATE requires MODEL > TARGET > PROPERTY > VALUE"
+            )
+
+        }
 
         const model = parts[1]
 
@@ -26,6 +35,14 @@ export class Global {
         parts: string[]
     ) {
 
+        if (parts.length < 3) {
+
+            throw new NDScriptError(
+                "CREATE requires MODEL > TARGET"
+            )
+
+        }
+
         const model = parts[1]
 
         const target = parts[2]
@@ -41,6 +58,14 @@ export class Global {
         parts: string[]
     ) {
 
+        if (parts.length < 3) {
+
+            throw new NDScriptError(
+                "DELETE requires MODEL > TARGET"
+            )
+
+        }
+
         const model = parts[1]
 
         const target = parts[2]
@@ -55,6 +80,14 @@ export class Global {
         context: RuntimeContext,
         parts: string[]
     ) {
+
+        if (parts.length < 3) {
+
+            throw new NDScriptError(
+                "VIEW requires MODEL > TARGET"
+            )
+
+        }
 
         const model = parts[1]
 
