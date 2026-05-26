@@ -14,171 +14,193 @@ export class NDScriptParser {
 
     async execute(code: string) {
 
-        const lines = code.split("\n")
+        try {
 
-        for (const rawLine of lines) {
+            const lines = code.split("\n")
 
-            const line = rawLine.trim()
+            for (const rawLine of lines) {
 
-            // Ignore empty lines
-            if (!line) continue
+                const line = rawLine.trim()
 
-            // Ignore comments
-            if (line.startsWith("--")) continue
+                // Ignore empty lines
+                if (!line) continue
 
-            // Variable support
-            if (line.startsWith("LET ")) {
+                // Ignore comments
+                if (line.startsWith("--")) continue
 
-                const variableLine = line
-                    .replace("LET ", "")
+                // Variable support
+                if (line.startsWith("LET ")) {
 
-                const [key, value] =
-                    variableLine.split("=")
+                    const variableLine = line
+                        .replace("LET ", "")
 
-                this.context.setVariable(
-                    key.trim(),
-                    value.trim()
-                )
+                    const [key, value] =
+                        variableLine.split("=")
 
-                this.context.log(
-                    `Variable set: ${key.trim()} = ${value.trim()}`
-                )
-
-                continue
-
-            }
-
-            // Save scripts
-            if (line.startsWith("SAVE ")) {
-
-                const saveLine = line
-                    .replace("SAVE ", "")
-
-                const [name, script] =
-                    saveLine.split("=")
-
-                this.context.saveScript(
-                    name.trim(),
-                    script.trim()
-                )
-
-                this.context.log(
-                    `Saved script: ${name.trim()}`
-                )
-
-                continue
-
-            }
-
-            // Run saved scripts
-            if (line.startsWith("RUN ")) {
-
-                const scriptName = line
-                    .replace("RUN ", "")
-                    .trim()
-
-                const savedScript =
-                    this.context.getScript(
-                        scriptName
+                    this.context.setVariable(
+                        key.trim(),
+                        value.trim()
                     )
 
-                if (!savedScript) {
-
-                    throw new NDScriptError(
-                        `Unknown saved script: ${scriptName}`
+                    this.context.log(
+                        `Variable set: ${key.trim()} = ${value.trim()}`
                     )
+
+                    continue
 
                 }
 
-                await this.execute(savedScript)
+                // Save scripts
+                if (line.startsWith("SAVE ")) {
 
-                continue
+                    const saveLine = line
+                        .replace("SAVE ", "")
 
-            }
+                    const [name, script] =
+                        saveLine.split("=")
 
-            // Split command syntax
-            const parts = line
-                .split(">")
-                .map(part => {
+                    this.context.saveScript(
+                        name.trim(),
+                        script.trim()
+                    )
 
-                    const value = part.trim()
+                    this.context.log(
+                        `Saved script: ${name.trim()}`
+                    )
 
-                    // Variable resolver
-                    if (value.startsWith("$")) {
+                    continue
 
-                        const variableName =
-                            value.slice(1)
+                }
 
-                        const variableValue =
-                            this.context.getVariable(
-                                variableName
-                            )
+                // Run saved scripts
+                if (line.startsWith("RUN ")) {
 
-                        return variableValue ?? value
+                    const scriptName = line
+                        .replace("RUN ", "")
+                        .trim()
+
+                    const savedScript =
+                        this.context.getScript(
+                            scriptName
+                        )
+
+                    if (!savedScript) {
+
+                        throw new NDScriptError(
+                            `Unknown saved script: ${scriptName}`
+                        )
 
                     }
 
-                    return value
+                    await this.execute(savedScript)
 
-                })
+                    continue
 
-            // Main command
-            const command = parts[0]?.toUpperCase()
+                }
 
-            switch(command) {
+                // Split command syntax
+                const parts = line
+                    .split(">")
+                    .map(part => {
 
-                case "UPDATE":
+                        const value = part.trim()
 
-                    await Global.update(
-                        this.context,
-                        parts
-                    )
+                        // Variable resolver
+                        if (value.startsWith("$")) {
 
-                    break
+                            const variableName =
+                                value.slice(1)
 
-                case "CREATE":
+                            const variableValue =
+                                this.context.getVariable(
+                                    variableName
+                                )
 
-                    await Global.create(
-                        this.context,
-                        parts
-                    )
+                            return variableValue ?? value
 
-                    break
+                        }
 
-                case "DELETE":
+                        return value
 
-                    await Global.delete(
-                        this.context,
-                        parts
-                    )
+                    })
 
-                    break
+                // Main command
+                const command = parts[0]?.toUpperCase()
 
-                case "VIEW":
+                switch(command) {
 
-                    await Global.view(
-                        this.context,
-                        parts
-                    )
+                    case "UPDATE":
 
-                    break
+                        await Global.update(
+                            this.context,
+                            parts
+                        )
 
-                default:
+                        break
 
-                    throw new NDScriptError(
-                        `Unknown command: ${command}`
-                    )
+                    case "CREATE":
+
+                        await Global.create(
+                            this.context,
+                            parts
+                        )
+
+                        break
+
+                    case "DELETE":
+
+                        await Global.delete(
+                            this.context,
+                            parts
+                        )
+
+                        break
+
+                    case "VIEW":
+
+                        await Global.view(
+                            this.context,
+                            parts
+                        )
+
+                        break
+
+                    default:
+
+                        throw new NDScriptError(
+                            `Unknown command: ${command}`
+                        )
+
+                }
 
             }
 
-        }
+            return {
 
-        // Return execution logs
-        return {
-            success: true,
-            logs: this.context.logs,
-            executionTime:
-                Date.now() - this.context.startTime
+                success: true,
+
+                logs: this.context.logs,
+
+                executionTime:
+                    Date.now() - this.context.startTime
+
+            }
+
+        } catch(error: any) {
+
+            return {
+
+                success: false,
+
+                error: error.message,
+
+                logs: this.context.logs,
+
+                executionTime:
+                    Date.now() - this.context.startTime
+
+            }
+
         }
 
     }
