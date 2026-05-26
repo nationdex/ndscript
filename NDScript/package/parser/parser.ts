@@ -1,5 +1,6 @@
 import { RuntimeContext } from "../runtime/context"
 import { Global } from "../commands/global"
+import { Filter } from "../commands/filter"
 import { NDScriptError } from "../utils/errors"
 import { parseValue } from "../utils/types"
 
@@ -17,6 +18,19 @@ export class NDScriptParser {
 
         try {
 
+            this.context.executionCount++
+
+            if (
+                this.context.executionCount >
+                this.context.maxExecutions
+            ) {
+
+                throw new NDScriptError(
+                    "Maximum execution limit reached"
+                )
+
+            }
+
             const lines = code.split("\n")
 
             for (const rawLine of lines) {
@@ -29,14 +43,33 @@ export class NDScriptParser {
                 // Ignore comments
                 if (line.startsWith("--")) continue
 
-                // Variable support
+                // LET variables
                 if (line.startsWith("LET ")) {
 
-                    const variableLine = line
-                        .replace("LET ", "")
+                    const variableLine =
+                        line.replace("LET ", "")
 
-                    const [key, value] =
-                        variableLine.split("=")
+                    const firstEquals =
+                        variableLine.indexOf("=")
+
+                    if (firstEquals === -1) {
+
+                        throw new NDScriptError(
+                            "Invalid LET syntax"
+                        )
+
+                    }
+
+                    const key =
+                        variableLine.slice(
+                            0,
+                            firstEquals
+                        )
+
+                    const value =
+                        variableLine.slice(
+                            firstEquals + 1
+                        )
 
                     this.context.setVariable(
                         key.trim(),
@@ -51,14 +84,33 @@ export class NDScriptParser {
 
                 }
 
-                // Save scripts
+                // SAVE scripts
                 if (line.startsWith("SAVE ")) {
 
-                    const saveLine = line
-                        .replace("SAVE ", "")
+                    const saveLine =
+                        line.replace("SAVE ", "")
 
-                    const [name, script] =
-                        saveLine.split("=")
+                    const firstEquals =
+                        saveLine.indexOf("=")
+
+                    if (firstEquals === -1) {
+
+                        throw new NDScriptError(
+                            "Invalid SAVE syntax"
+                        )
+
+                    }
+
+                    const name =
+                        saveLine.slice(
+                            0,
+                            firstEquals
+                        )
+
+                    const script =
+                        saveLine.slice(
+                            firstEquals + 1
+                        )
 
                     this.context.saveScript(
                         name.trim(),
@@ -73,12 +125,12 @@ export class NDScriptParser {
 
                 }
 
-                // Run saved scripts
+                // RUN saved scripts
                 if (line.startsWith("RUN ")) {
 
-                    const scriptName = line
-                        .replace("RUN ", "")
-                        .trim()
+                    const scriptName =
+                        line.replace("RUN ", "")
+                            .trim()
 
                     const savedScript =
                         this.context.getScript(
@@ -99,15 +151,78 @@ export class NDScriptParser {
 
                 }
 
-                // Split command syntax
+                // IF conditions
+                if (line.startsWith("IF ")) {
+
+                    const conditionRaw =
+                        line.replace("IF ", "")
+                            .trim()
+
+                    let conditionValue: any
+
+                    if (
+                        conditionRaw.startsWith("$")
+                    ) {
+
+                        conditionValue =
+                            this.context.getVariable(
+                                conditionRaw.slice(1)
+                            )
+
+                    } else {
+
+                        conditionValue =
+                            parseValue(conditionRaw)
+
+                    }
+
+                    this.context.conditionPassed =
+                        Boolean(conditionValue)
+
+                    this.context.log(
+                        `Condition: ${this.context.conditionPassed}`
+                    )
+
+                    continue
+
+                }
+
+                // ENDIF resets conditions
+                if (line === "ENDIF") {
+
+                    this.context.conditionPassed = true
+
+                    this.context.log(
+                        "Condition reset"
+                    )
+
+                    continue
+
+                }
+
+                // Skip execution if IF failed
+                if (!this.context.conditionPassed) {
+
+                    this.context.log(
+                        `Skipped: ${line}`
+                    )
+
+                    continue
+
+                }
+
+                // Split syntax
                 const parts = line
                     .split(">")
                     .map(part => {
 
-                        const value = part.trim()
+                        const value =
+                            part.trim()
 
                         // Variable resolver
-                        if (value.startsWith("$")) {
+                        if (
+                            value.startsWith("$")
+                        ) {
 
                             const variableName =
                                 value.slice(1)
@@ -117,7 +232,8 @@ export class NDScriptParser {
                                     variableName
                                 )
 
-                            return variableValue ?? value
+                            return variableValue
+                                ?? value
 
                         }
 
@@ -126,7 +242,8 @@ export class NDScriptParser {
                     })
 
                 // Main command
-                const command = parts[0]?.toUpperCase()
+                const command =
+                    parts[0]?.toUpperCase()
 
                 switch(command) {
 
@@ -166,6 +283,15 @@ export class NDScriptParser {
 
                         break
 
+                    case "FILTER":
+
+                        await Filter.execute(
+                            this.context,
+                            parts
+                        )
+
+                        break
+
                     default:
 
                         throw new NDScriptError(
@@ -183,7 +309,8 @@ export class NDScriptParser {
                 logs: this.context.logs,
 
                 executionTime:
-                    Date.now() - this.context.startTime
+                    Date.now() -
+                    this.context.startTime
 
             }
 
@@ -198,7 +325,8 @@ export class NDScriptParser {
                 logs: this.context.logs,
 
                 executionTime:
-                    Date.now() - this.context.startTime
+                    Date.now() -
+                    this.context.startTime
 
             }
 
