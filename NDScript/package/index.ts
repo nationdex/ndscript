@@ -1,2 +1,2 @@
-export * from "./parser/parser"
-export * from "../installer/installer"
+export * from "../installer/installer";
+export * from "./parser/parser";

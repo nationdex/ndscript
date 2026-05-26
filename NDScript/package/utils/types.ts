@@ -1,23 +1,20 @@
-export function parseValue(value: any): any {
+export function parseValue(
+	value: string,
+): string | number | boolean | null | undefined {
+	// Boolean
+	if (value === "true") return true;
+	if (value === "false") return false;
 
-    // Boolean
-    if (value === "true") return true
+	// Null
+	if (value === "null") return null;
 
-    if (value === "false") return false
+	// Undefined
+	if (value === "undefined") return undefined;
 
-    // Null
-    if (value === "null") return null
+	// Number
+	if (value.trim() !== "" && !Number.isNaN(Number(value))) {
+		return Number(value);
+	}
 
-    // Undefined
-    if (value === "undefined") return undefined
-
-    // Number
-    if (!isNaN(Number(value))) {
-
-        return Number(value)
-
-    }
-
-    return value
-
+	return value;
 }

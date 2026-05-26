@@ -1,0 +1,23 @@
+{
+  "name": "ndscript",
+  "version": "1.0.0",
+  "description": "An extra package for Project NationDex 2026 inspired by the original DexScript for BallsDex, where admins and devs easily perform runtime operations on NationDex data by using a clean scripting syntax.",
+  "homepage": "https://github.com/nationdex/ndscript#readme",
+  "bugs": {
+    "url": "https://github.com/nationdex/ndscript/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nationdex/ndscript.git"
+  },
+  "license": "MIT",
+  "author": "astrod-ev",
+  "type": "commonjs",
+  "main": "NDScript/package/index.ts",
+  "scripts": {
+    "check": "npx biome check --write"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^2.4.15"
+  }
+}

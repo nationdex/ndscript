@@ -6,7 +6,7 @@ Inspired by DexScript, NDScript allows administrators and developers to easily p
 
 ---
 
-# Features
+## Features
 
 - UPDATE commands
 - CREATE commands
@@ -24,7 +24,7 @@ Inspired by DexScript, NDScript allows administrators and developers to easily p
 
 ---
 
-# Example Syntax
+## Example Syntax
 
 ```ndscript
 UPDATE > COUNTRY > India > RARITY > 0.2
@@ -44,7 +44,7 @@ VIEW > COUNTRY > Germany
 
 ---
 
-# Variables
+## Variables
 
 ```ndscript
 LET rare = 0.2
@@ -54,7 +54,7 @@ UPDATE > COUNTRY > India > RARITY > $rare
 
 ---
 
-# Conditions
+## Conditions
 
 ```ndscript
 IF true
@@ -66,7 +66,7 @@ ENDIF
 
 ---
 
-# Filters
+## Filters
 
 ```ndscript
 FILTER > COUNTRY > RARITY > 0.2
@@ -74,7 +74,7 @@ FILTER > COUNTRY > RARITY > 0.2
 
 ---
 
-# Saved Scripts
+## Saved Scripts
 
 ```ndscript
 SAVE event1 = UPDATE > COUNTRY > India > RARITY > 0.2
@@ -84,7 +84,7 @@ RUN event1
 
 ---
 
-# Installation
+## Installation
 
 NDScript includes a built-in installer runtime.
 
@@ -96,7 +96,7 @@ NDScript/installer/installer.ts
 
 ---
 
-# Project Structure
+## Project Structure
 
 ```txt
 NDScript/
@@ -120,7 +120,7 @@ NDScript/
 
 ---
 
-# Runtime Example
+## Runtime Example
 
 ```ts
 import { NDScriptParser } from "./package"
@@ -136,7 +136,7 @@ UPDATE > COUNTRY > India > RARITY > $rare
 
 ---
 
-# Current Status
+## Current Status
 
 NDScript is currently in active development.
 
@@ -147,7 +147,7 @@ v0.1.0-alpha
 
 ---
 
-# Goals
+## Goals
 
 - Full NationDex integration
 - ForgeScript command support
@@ -160,13 +160,13 @@ v0.1.0-alpha
 
 ---
 
-# License
+## License
 
 MIT License
 
 ---
 
-# Credits
+## Credits
 
 - Inspired by DexScript
 - Built for NationDex

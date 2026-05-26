@@ -1,102 +1,52 @@
-import { RuntimeContext } from "../runtime/context"
-import { NDScriptError } from "../utils/errors"
+import type { RuntimeContext } from "../runtime/context";
+import { NDScriptError } from "../utils/errors";
 
-export class Global {
+export const Global = {
+	async update(context: RuntimeContext, parts: unknown[]) {
+		if (parts.length < 5) {
+			throw new NDScriptError(
+				"UPDATE requires MODEL > TARGET > PROPERTY > VALUE",
+			);
+		}
 
-    static async update(
-        context: RuntimeContext,
-        parts: any[]
-    ) {
+		const model = parts[1];
+		const target = parts[2];
+		const property = parts[3];
+		const value = parts[4];
 
-        if (parts.length < 5) {
+		context.log(`Updating ${model} ${target}: ${property} -> ${value}`);
+	},
 
-            throw new NDScriptError(
-                "UPDATE requires MODEL > TARGET > PROPERTY > VALUE"
-            )
+	async create(context: RuntimeContext, parts: unknown[]) {
+		if (parts.length < 3) {
+			throw new NDScriptError("CREATE requires MODEL > TARGET");
+		}
 
-        }
+		const model = parts[1];
+		const target = parts[2];
 
-        const model = parts[1]
+		context.log(`Creating ${model}: ${target}`);
+	},
 
-        const target = parts[2]
+	async delete(context: RuntimeContext, parts: unknown[]) {
+		if (parts.length < 3) {
+			throw new NDScriptError("DELETE requires MODEL > TARGET");
+		}
 
-        const property = parts[3]
+		const model = parts[1];
+		const target = parts[2];
 
-        const value = parts[4]
+		context.log(`Deleting ${model}: ${target}`);
+	},
 
-        context.log(
-            `Updating ${model} ${target}: ${property} -> ${value}`
-        )
+	async view(context: RuntimeContext, parts: unknown[]) {
+		if (parts.length < 3) {
+			throw new NDScriptError("VIEW requires MODEL > TARGET");
+		}
 
-    }
+		const model = parts[1];
+		const target = parts[2];
 
-    static async create(
-        context: RuntimeContext,
-        parts: any[]
-    ) {
-
-        if (parts.length < 3) {
-
-            throw new NDScriptError(
-                "CREATE requires MODEL > TARGET"
-            )
-
-        }
-
-        const model = parts[1]
-
-        const target = parts[2]
-
-        context.log(
-            `Creating ${model}: ${target}`
-        )
-
-    }
-
-    static async delete(
-        context: RuntimeContext,
-        parts: any[]
-    ) {
-
-        if (parts.length < 3) {
-
-            throw new NDScriptError(
-                "DELETE requires MODEL > TARGET"
-            )
-
-        }
-
-        const model = parts[1]
-
-        const target = parts[2]
-
-        context.log(
-            `Deleting ${model}: ${target}`
-        )
-
-    }
-
-    static async view(
-        context: RuntimeContext,
-        parts: any[]
-    ) {
-
-        if (parts.length < 3) {
-
-            throw new NDScriptError(
-                "VIEW requires MODEL > TARGET"
-            )
-
-        }
-
-        const model = parts[1]
-
-        const target = parts[2]
-
-        context.log(
-            `Viewing ${model}: ${target}`
-        )
-
-    }
-
-}
+		context.log(`Viewing ${model}: ${target}`);
+	},
+};
