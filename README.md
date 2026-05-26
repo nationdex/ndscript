@@ -141,6 +141,7 @@ UPDATE > COUNTRY > India > RARITY > $rare
 NDScript is currently in active development.
 
 Current version:
+
 ```txt
 v0.1.0-alpha
 ```
