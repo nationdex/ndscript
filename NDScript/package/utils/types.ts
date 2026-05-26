@@ -5,15 +5,18 @@ export function parseValue(value: any): any {
 
     if (value === "false") return false
 
+    // Null
+    if (value === "null") return null
+
+    // Undefined
+    if (value === "undefined") return undefined
+
     // Number
     if (!isNaN(Number(value))) {
 
         return Number(value)
 
     }
-
-    // Null
-    if (value === "null") return null
 
     return value
 
