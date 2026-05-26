@@ -4,6 +4,8 @@ export class RuntimeContext {
 
     variables: Map<string, any> = new Map()
 
+    savedScripts: Map<string, string> = new Map()
+
     startTime: number = Date.now()
 
     log(message: string) {
@@ -26,6 +28,21 @@ export class RuntimeContext {
     getVariable(key: string) {
 
         return this.variables.get(key)
+
+    }
+
+    saveScript(
+        name: string,
+        code: string
+    ) {
+
+        this.savedScripts.set(name, code)
+
+    }
+
+    getScript(name: string) {
+
+        return this.savedScripts.get(name)
 
     }
 
