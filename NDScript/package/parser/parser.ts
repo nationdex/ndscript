@@ -27,10 +27,53 @@ export class NDScriptParser {
             // Ignore comments
             if (line.startsWith("--")) continue
 
+            // Variable support
+            if (line.startsWith("LET ")) {
+
+                const variableLine = line
+                    .replace("LET ", "")
+
+                const [key, value] =
+                    variableLine.split("=")
+
+                this.context.setVariable(
+                    key.trim(),
+                    value.trim()
+                )
+
+                this.context.log(
+                    `Variable set: ${key.trim()} = ${value.trim()}`
+                )
+
+                continue
+
+            }
+
             // Split command syntax
             const parts = line
                 .split(">")
-                .map(part => part.trim())
+                .map(part => {
+
+                    const value = part.trim()
+
+                    // Variable resolver
+                    if (value.startsWith("$")) {
+
+                        const variableName =
+                            value.slice(1)
+
+                        const variableValue =
+                            this.context.getVariable(
+                                variableName
+                            )
+
+                        return variableValue ?? value
+
+                    }
+
+                    return value
+
+                })
 
             // Main command
             const command = parts[0]?.toUpperCase()
