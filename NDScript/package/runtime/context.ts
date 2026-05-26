@@ -6,6 +6,8 @@ export class RuntimeContext {
 
     savedScripts: Map<string, string> = new Map()
 
+    conditionPassed: boolean = true
+
     startTime: number = Date.now()
 
     log(message: string) {
