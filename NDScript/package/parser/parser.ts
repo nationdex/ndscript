@@ -14,7 +14,6 @@ export class NDScriptParser {
 
     async execute(code: string) {
 
-        // Split multiline scripts
         const lines = code.split("\n")
 
         for (const rawLine of lines) {
@@ -44,6 +43,54 @@ export class NDScriptParser {
                 this.context.log(
                     `Variable set: ${key.trim()} = ${value.trim()}`
                 )
+
+                continue
+
+            }
+
+            // Save scripts
+            if (line.startsWith("SAVE ")) {
+
+                const saveLine = line
+                    .replace("SAVE ", "")
+
+                const [name, script] =
+                    saveLine.split("=")
+
+                this.context.saveScript(
+                    name.trim(),
+                    script.trim()
+                )
+
+                this.context.log(
+                    `Saved script: ${name.trim()}`
+                )
+
+                continue
+
+            }
+
+            // Run saved scripts
+            if (line.startsWith("RUN ")) {
+
+                const scriptName = line
+                    .replace("RUN ", "")
+                    .trim()
+
+                const savedScript =
+                    this.context.getScript(
+                        scriptName
+                    )
+
+                if (!savedScript) {
+
+                    throw new NDScriptError(
+                        `Unknown saved script: ${scriptName}`
+                    )
+
+                }
+
+                await this.execute(savedScript)
 
                 continue
 
