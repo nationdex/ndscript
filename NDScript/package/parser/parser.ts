@@ -1,6 +1,7 @@
 import { RuntimeContext } from "../runtime/context"
 import { Global } from "../commands/global"
 import { NDScriptError } from "../utils/errors"
+import { parseValue } from "../utils/types"
 
 export class NDScriptParser {
 
@@ -39,7 +40,7 @@ export class NDScriptParser {
 
                     this.context.setVariable(
                         key.trim(),
-                        value.trim()
+                        parseValue(value.trim())
                     )
 
                     this.context.log(
@@ -120,7 +121,7 @@ export class NDScriptParser {
 
                         }
 
-                        return value
+                        return parseValue(value)
 
                     })
 
