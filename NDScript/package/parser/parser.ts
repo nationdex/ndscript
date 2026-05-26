@@ -1,5 +1,6 @@
 import { RuntimeContext } from "../runtime/context"
 import { Global } from "../commands/global"
+import { NDScriptError } from "../utils/errors"
 
 export class NDScriptParser {
 
@@ -13,6 +14,7 @@ export class NDScriptParser {
 
     async execute(code: string) {
 
+        // Split multiline scripts
         const lines = code.split("\n")
 
         for (const rawLine of lines) {
@@ -25,7 +27,7 @@ export class NDScriptParser {
             // Ignore comments
             if (line.startsWith("--")) continue
 
-            // Split syntax
+            // Split command syntax
             const parts = line
                 .split(">")
                 .map(part => part.trim())
@@ -73,7 +75,7 @@ export class NDScriptParser {
 
                 default:
 
-                    this.context.log(
+                    throw new NDScriptError(
                         `Unknown command: ${command}`
                     )
 
