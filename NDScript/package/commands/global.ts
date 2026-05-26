@@ -5,7 +5,7 @@ export class Global {
 
     static async update(
         context: RuntimeContext,
-        parts: string[]
+        parts: any[]
     ) {
 
         if (parts.length < 5) {
@@ -32,7 +32,7 @@ export class Global {
 
     static async create(
         context: RuntimeContext,
-        parts: string[]
+        parts: any[]
     ) {
 
         if (parts.length < 3) {
@@ -55,7 +55,7 @@ export class Global {
 
     static async delete(
         context: RuntimeContext,
-        parts: string[]
+        parts: any[]
     ) {
 
         if (parts.length < 3) {
@@ -78,7 +78,7 @@ export class Global {
 
     static async view(
         context: RuntimeContext,
-        parts: string[]
+        parts: any[]
     ) {
 
         if (parts.length < 3) {
