@@ -173,6 +173,14 @@ export class NDScriptParser {
 
         }
 
+        // Return execution logs
+        return {
+            success: true,
+            logs: this.context.logs,
+            executionTime:
+                Date.now() - this.context.startTime
+        }
+
     }
 
 }
