@@ -31,16 +31,14 @@ export class NDScriptParser {
 				if (line.startsWith("LET ")) {
 					const variableLine = line.replace("LET ", "");
 					const firstEquals = variableLine.indexOf("=");
+
 					if (firstEquals === -1) {
 						throw new NDScriptError("Invalid LET syntax");
 					}
 
 					const key = variableLine.slice(0, firstEquals);
-
 					const value = variableLine.slice(firstEquals + 1);
-
 					this.context.setVariable(key.trim(), parseValue(value.trim()));
-
 					this.context.log(`Variable set: ${key.trim()} = ${value.trim()}`);
 
 					continue;
@@ -49,7 +47,6 @@ export class NDScriptParser {
 				// SAVE scripts
 				if (line.startsWith("SAVE ")) {
 					const saveLine = line.replace("SAVE ", "");
-
 					const firstEquals = saveLine.indexOf("=");
 
 					if (firstEquals === -1) {
@@ -57,11 +54,8 @@ export class NDScriptParser {
 					}
 
 					const name = saveLine.slice(0, firstEquals);
-
 					const script = saveLine.slice(firstEquals + 1);
-
 					this.context.saveScript(name.trim(), script.trim());
-
 					this.context.log(`Saved script: ${name.trim()}`);
 
 					continue;
@@ -70,7 +64,6 @@ export class NDScriptParser {
 				// RUN saved scripts
 				if (line.startsWith("RUN ")) {
 					const scriptName = line.replace("RUN ", "").trim();
-
 					const savedScript = this.context.getScript(scriptName);
 
 					if (!savedScript) {
@@ -85,7 +78,6 @@ export class NDScriptParser {
 				// IF conditions
 				if (line.startsWith("IF ")) {
 					const conditionRaw = line.replace("IF ", "").trim();
-
 					let conditionValue: unknown;
 
 					if (conditionRaw.startsWith("$")) {
@@ -95,7 +87,6 @@ export class NDScriptParser {
 					}
 
 					this.context.conditionPassed = Boolean(conditionValue);
-
 					this.context.log(`Condition: ${this.context.conditionPassed}`);
 
 					continue;
@@ -104,7 +95,6 @@ export class NDScriptParser {
 				// ENDIF resets conditions
 				if (line === "ENDIF") {
 					this.context.conditionPassed = true;
-
 					this.context.log("Condition reset");
 
 					continue;
@@ -124,9 +114,7 @@ export class NDScriptParser {
 					// Variable resolver
 					if (value.startsWith("$")) {
 						const variableName = value.slice(1);
-
 						const variableValue = this.context.getVariable(variableName);
-
 						return variableValue ?? value;
 					}
 
@@ -134,7 +122,7 @@ export class NDScriptParser {
 				});
 
 				// Main command
-				const command = parts[0]?.toUpperCase();
+				const command = parts[0] ? String(parts[0]).toUpperCase() : undefined;
 
 				switch (command) {
 					case "UPDATE":
