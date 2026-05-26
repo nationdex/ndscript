@@ -10,6 +10,10 @@ export class RuntimeContext {
 
     startTime: number = Date.now()
 
+    executionCount: number = 0
+
+    maxExecutions: number = 100
+
     log(message: string) {
 
         this.logs.push(message)
