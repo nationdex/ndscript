@@ -11,15 +11,6 @@
 		"url": "git+https://github.com/nationdex/ndscript.git"
 	},
 	"license": "MIT",
-	"type": "module",
-	"main": "NDScript/package/index.ts",
-	"scripts": {
-		"check": "npx biome check --write"
-	},
-	"devDependencies": {
-		"@biomejs/biome": "^2.4.15"
-	},
-	"dependencies": {
-		"typescript": "^6.0.3"
-	}
+	"author": "astrod-ev",
+	"type": "module"
 }
