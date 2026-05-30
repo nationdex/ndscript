@@ -1,7 +1,7 @@
 {
 	"name": "ndscript",
-	"version": "1.0.0",
-	"description": "An extra package for Project NationDex 2026 inspired by the original DexScript for BallsDex, where admins and devs easily perform runtime operations on NationDex data by using a clean scripting syntax.",
+	"version": "0.1.0-alpha",
+	"description": "ForgeScript extra for Project NationDex 2026. Run NDScript to perform runtime operations on NationDex data.",
 	"homepage": "https://github.com/nationdex/ndscript#readme",
 	"bugs": {
 		"url": "https://github.com/nationdex/ndscript/issues"
@@ -12,5 +12,27 @@
 	},
 	"license": "MIT",
 	"author": "astrod-ev",
-	"type": "module"
+	"type": "commonjs",
+	"main": "dist/lib/index.js",
+	"files": [
+		"dist",
+		"variables.json",
+		"README.md",
+		"LICENSE"
+	],
+	"scripts": {
+		"build": "tsc && node scripts/copy-assets.js",
+		"check": "biome check",
+		"check:fix": "biome check --write",
+		"typecheck": "tsc --noEmit"
+	},
+	"dependencies": {
+		"@tryforge/forge.db": "github:tryforge/forgedb#main",
+		"@tryforge/forgescript": "github:tryforge/forgescript#dev"
+	},
+	"devDependencies": {
+		"@biomejs/biome": "^2.4.16",
+		"@types/node": "^22.13.10",
+		"typescript": "^6.0.3"
+	}
 }
